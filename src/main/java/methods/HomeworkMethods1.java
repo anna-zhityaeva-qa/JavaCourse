@@ -128,7 +128,7 @@ public class HomeworkMethods1 {
         return newList;
     }
 
-    // === НОВЫЙ МЕТОД ДЛЯ 3-Й РАБОТЫ (Требование: возвращает List) ===
+    // === НОВЫЙ МЕТОД ДЛЯ 3-Й РАБОТЫ (возвращает List) ===
     // Возвращает список имен, начинающихся с буквы "A"
     public static List<String> getNamesStartingWithA(List<String> names) {
         List<String> result = new ArrayList<>();
