@@ -85,7 +85,7 @@ public class Test1 {
     }
 
     // Для getGrade используем ParameterizedTest с 10 значениями,
-    // эквивалентно 10 запускам
+    // что эквивалентно 10 запускам
     @ParameterizedTest
     @ValueSource(ints = {0, 10, 20, 21, 40, 50, 60, 61, 80, 100})
     @DisplayName("ДЗ3.2.3: getGrade")

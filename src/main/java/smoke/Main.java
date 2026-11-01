@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        // Примеры использования методов из HomeworkMethods
+        // Примеры использования методов из HomeworkMethods1
 
         System.out.println("Задача 1: " + methods.HomeworkMethods1.isEven(4)); // true
         System.out.println("Задача 2: " + methods.HomeworkMethods1.checkAccess(20)); // Allowed

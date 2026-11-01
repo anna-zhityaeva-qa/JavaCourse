@@ -26,7 +26,7 @@ java {
 
 tasks.test {
     useJUnitPlatform {
-        // Фильтрация по тегу
+        // Фильтр по тегу
         includeTags("homework")
     }
     testLogging {
