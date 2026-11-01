@@ -1,17 +1,16 @@
 package methods;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
-public class HomeworkMethods1{
+public class HomeworkMethods1 {
 
-    // Задача 1
+    // ... (методы 1-12) ...
+
     public static boolean isEven(int n) {
         return n % 2 == 0;
     }
 
-    // Задача 2
     public static String checkAccess(int age) {
         if (age > 18) {
             return "Allowed";
@@ -20,12 +19,10 @@ public class HomeworkMethods1{
         }
     }
 
-    // Задача 3
     public static boolean isPositive(int n) {
         return n >= 0 ? true : false;
     }
 
-    // Задача 4
     public static String getGrade(int score) {
         if (score >= 0 && score <= 20) {
             return "E";
@@ -42,7 +39,6 @@ public class HomeworkMethods1{
         }
     }
 
-    // Задача 5
     public static String blastOff(int start) {
         StringBuilder sb = new StringBuilder();
         for (int i = start; i >= 1; i--) {
@@ -55,7 +51,6 @@ public class HomeworkMethods1{
         return sb.toString();
     }
 
-    // Задача 6
     public static int sumToN(int n) {
         int sum = 0;
         for (int i = 1; i <= n; i++) {
@@ -64,7 +59,6 @@ public class HomeworkMethods1{
         return sum;
     }
 
-    // Задача 7
     public static boolean hasBug(String[] messages) {
         for (String msg : messages) {
             if ("Bug".equalsIgnoreCase(msg)) {
@@ -74,7 +68,6 @@ public class HomeworkMethods1{
         return false;
     }
 
-    // Задача 8
     public static String getEvenInRange(int start, int end) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
@@ -90,7 +83,6 @@ public class HomeworkMethods1{
         return sb.toString();
     }
 
-    // Задача 9
     public static int findMax(int[] arr) {
         if (arr == null || arr.length == 0) {
             throw new IllegalArgumentException("Array is empty or null");
@@ -104,7 +96,6 @@ public class HomeworkMethods1{
         return max;
     }
 
-    // Задача 10
     public static String[] reverse(String[] arr) {
         if (arr == null) return null;
         String[] reversed = new String[arr.length];
@@ -114,7 +105,6 @@ public class HomeworkMethods1{
         return reversed;
     }
 
-    // Задача 11
     public static double calcAverage(List<Integer> list) {
         if (list == null || list.isEmpty()) {
             return 0.0;
@@ -126,7 +116,6 @@ public class HomeworkMethods1{
         return (double) sum / list.size();
     }
 
-    // Задача 12
     public static List<String> removeSpecificName(List<String> list, String nameToRemove) {
         List<String> newList = new ArrayList<>();
         if (list != null) {
@@ -137,5 +126,19 @@ public class HomeworkMethods1{
             }
         }
         return newList;
+    }
+
+    // === НОВЫЙ МЕТОД ДЛЯ 3-Й РАБОТЫ (Требование: возвращает List) ===
+    // Возвращает список имен, начинающихся с буквы "A"
+    public static List<String> getNamesStartingWithA(List<String> names) {
+        List<String> result = new ArrayList<>();
+        if (names != null) {
+            for (String name : names) {
+                if (name != null && name.startsWith("A")) {
+                    result.add(name);
+                }
+            }
+        }
+        return result;
     }
 }

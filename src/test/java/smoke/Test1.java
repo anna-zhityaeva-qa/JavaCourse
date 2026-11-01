@@ -1,254 +1,238 @@
 package smoke;
 
+import methods.HomeworkMethods1;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.assertj.core.api.Assertions;
 
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
-// Добавлен тег для фильтрации в Gradle задаче
-@Tag("homework")
+import static org.junit.jupiter.api.Assertions.*;
+
+@Tag("homework") // Тег для фильтрации
 public class Test1 {
 
-    private static final Random random = new Random();
-
-    // Метод будет выполняться перед КАЖДЫМ тестом
     @BeforeEach
     void setUp(TestInfo testInfo) {
-        System.out.println("Test method start");
-        String methodName = testInfo.getTestMethod().map(m -> m.getName()).orElse("unknown");
-        System.out.println("Running: " + methodName);
+        System.out.println("\n========================");
+        System.out.println("START: " + testInfo.getDisplayName());
+        System.out.println("========================");
     }
 
-    // Метод будет выполняться после КАЖДОГО теста
     @AfterEach
     void tearDown() {
-        System.out.println("Test method end");
-        System.out.println("===");
+        System.out.println("END: Test finished");
+        System.out.println("========================\n");
     }
 
-    // --- ЗАДАЧА 1 (ЛЕКЦИЯ): Тесты с выводом сообщений и случайными данными ---
+    // ==========================================
+    // ЗАДАЧА 1 (4 сценария)
+    // ==========================================
 
-    // Тест проверки четности числа (возвращает boolean)
-    // Запускается 10 раз
+    @Test
+    @DisplayName("ДЗ3.1.1: Boolean check")
+    void testBoolean() {
+        boolean result = HomeworkMethods1.isEven(4);
+        assertTrue(result, "isEven(4) должно быть true");
+    }
+
+    @Test
+    @DisplayName("ДЗ3.1.2: List check")
+    void testList() {
+        List<String> input = List.of("Anna", "Bob", "Alice");
+        List<String> expected = List.of("Anna", "Alice");
+        List<String> actual = HomeworkMethods1.getNamesStartingWithA(input);
+        assertEquals(expected, actual, "getNamesStartingWithA вернул неверный список");
+    }
+
+    @Test
+    @DisplayName("ДЗ3.1.3: String check")
+    void testString() {
+        String result = HomeworkMethods1.checkAccess(20);
+        assertEquals("Allowed", result, "checkAccess(20) должно быть Allowed");
+    }
+
+    @Test
+    @DisplayName("ДЗ3.1.4: Intentional Fail")
+    void testFail() {
+        // Намеренный сбой для демонстрации
+        int expected = 10;
+        int actual = 5;
+        assertEquals(expected, actual, "ОШИБКА: Ожидалось " + expected + ", пришло " + actual);
+    }
+
+    // ==========================================
+    // ЗАДАЧА 2 (12 методов, каждый запустить 10 раз)
+    // ==========================================
+
     @RepeatedTest(10)
-    @DisplayName("Тест isEven со случайным числом")
-    void testIsEvenRandom(RepetitionInfo repetitionInfo) {
-        int n = random.nextInt(100) + 1;
+    @DisplayName("ДЗ3.2.1: isEven")
+    void testIsEven() {
+        int n = ThreadLocalRandom.current().nextInt(1, 101);
         boolean expected = n % 2 == 0;
-        boolean actual = methods.HomeworkMethods1.isEven(n);
-
-        // AssertJ для информативного сообщения
-        Assertions.assertThat(actual)
-                .as("Проверка четности числа %d: ожидалось %b, получено %b", n, expected, actual)
-                .isEqualTo(expected);
+        boolean actual = HomeworkMethods1.isEven(n);
+        assertEquals(expected, actual, "isEven error for n=" + n);
     }
 
-    // Тест проверки доступа по возрасту
-    // Запускается 10 раз
     @RepeatedTest(10)
-    @DisplayName("Тест checkAccess со случайным возрастом")
-    void testCheckAccess(RepetitionInfo repetitionInfo) {
-        int age = random.nextInt(100);
+    @DisplayName("ДЗ3.2.2: checkAccess")
+    void testCheckAccess() {
+        int age = ThreadLocalRandom.current().nextInt(0, 100);
         String expected = age > 18 ? "Allowed" : "Denied";
-        String actual = methods.HomeworkMethods1.checkAccess(age);
-
-        Assertions.assertThat(actual)
-                .as("Проверка доступа для возраста %d: ожидалось '%s', получено '%s'", age, expected, actual)
-                .isEqualTo(expected);
+        String actual = HomeworkMethods1.checkAccess(age);
+        assertEquals(expected, actual, "checkAccess error for age=" + age);
     }
 
-    // Тест определения оценки по баллам
-    // Используем ParameterizedTest с большим количеством значений, чтобы имитировать многократный запуск
+    // Для getGrade используем ParameterizedTest с 10 значениями,
+    // что эквивалентно 10 запускам
     @ParameterizedTest
-    @ValueSource(ints = {0, 10, 25, 35, 45, 55, 65, 75, 85, 95, 100})
-    @DisplayName("Тест getGrade с параметризованными данными")
-    void testGetGradeParameterized(int score) {
+    @ValueSource(ints = {0, 10, 20, 21, 40, 50, 60, 61, 80, 100})
+    @DisplayName("ДЗ3.2.3: getGrade")
+    void testGetGrade(int score) {
+        String actual = HomeworkMethods1.getGrade(score);
         String expected;
-        if (score >= 0 && score <= 20) expected = "E";
-        else if (score >= 21 && score <= 40) expected = "D";
-        else if (score >= 41 && score <= 60) expected = "C";
-        else if (score >= 61 && score <= 80) expected = "B";
-        else if (score >= 81 && score <= 100) expected = "A";
+        if (score <= 20) expected = "E";
+        else if (score <= 40) expected = "D";
+        else if (score <= 60) expected = "C";
+        else if (score <= 80) expected = "B";
+        else if (score <= 100) expected = "A";
         else expected = "Error";
 
-        String actual = methods.HomeworkMethods1.getGrade(score);
-
-        Assertions.assertThat(actual)
-                .as("Оценка для балла %d: ожидалась '%s', получена '%s'", score, expected, actual)
-                .isEqualTo(expected);
+        assertEquals(expected, actual, "getGrade error for score=" + score);
     }
 
-    // --- ЗАДАЧА 2 (ВЕБИНАР): Дополнительные тесты ---
-    // Все тесты помечены тегом "homework" для фильтрации.
-    // Все тесты запущены 10 раз через @RepeatedTest.
-
-    // Тест проверки положительности числа (boolean)
-    // Диапазон - 1..100, чтобы исключить 0 и избежать неоднозначности.
-    // Логика: положительное число > 0.
     @RepeatedTest(10)
-    @DisplayName("Тест isPositive со случайным числом")
-    void testIsPositive(RepetitionInfo repetitionInfo) {
-        // Генерируем число от 1 до 100
-        int n = random.nextInt(100) + 1;
-        boolean expected = n > 0;
-        boolean actual = methods.HomeworkMethods1.isPositive(n);
-
-        Assertions.assertThat(actual)
-                .as("Проверка положительности числа %d: ожидалось %b, получено %b", n, expected, actual)
-                .isEqualTo(expected);
+    @DisplayName("ДЗ3.2.4: isPositive")
+    void testIsPositive() {
+        int n = ThreadLocalRandom.current().nextInt(-50, 51);
+        boolean expected = n >= 0;
+        boolean actual = HomeworkMethods1.isPositive(n);
+        assertEquals(expected, actual, "isPositive error for n=" + n);
     }
 
-    // Тест функции обратного отсчета
     @RepeatedTest(10)
-    @DisplayName("Тест blastOff со случайным стартом")
-    void testBlastOff(RepetitionInfo repetitionInfo) {
-        int start = random.nextInt(10) + 1; // От 1 до 10
-        String result = methods.HomeworkMethods1.blastOff(start);
+    @DisplayName("ДЗ3.2.5: blastOff")
+    void testBlastOff() {
+        int start = ThreadLocalRandom.current().nextInt(1, 11);
+        StringBuilder sb = new StringBuilder();
+        for (int i = start; i >= 1; i--) {
+            if (i != start) sb.append(" ");
+            sb.append(i);
+        }
+        sb.append(" Поехали!");
+        String expected = sb.toString();
 
-        // Проверяем, что результат содержит ожидаемую фразу
-        Assertions.assertThat(result)
-                .as("Результат blastOff(%d) должен содержать 'Поехали!'. Получено: %s", start, result)
-                .contains("Поехали!");
+        String actual = HomeworkMethods1.blastOff(start);
+        assertEquals(expected, actual, "blastOff error for start=" + start);
     }
 
-    // Тест вычисления суммы чисел от 1 до N
     @RepeatedTest(10)
-    @DisplayName("Тест sumToN со случайным N")
-    void testSumToN(RepetitionInfo repetitionInfo) {
-        int n = random.nextInt(50) + 1; // От 1 до 50
-        int expected = n * (n + 1) / 2;
-        int actual = methods.HomeworkMethods1.sumToN(n);
-
-        Assertions.assertThat(actual)
-                .as("Сумма от 1 до %d: ожидалось %d, получено %d", n, expected, actual)
-                .isEqualTo(expected);
+    @DisplayName("ДЗ3.2.6: sumToN")
+    void testSumToN() {
+        int n = ThreadLocalRandom.current().nextInt(1, 20);
+        int expected = (n * (n + 1)) / 2;
+        int actual = HomeworkMethods1.sumToN(n);
+        assertEquals(expected, actual, "sumToN error for n=" + n);
     }
 
-    // Тест поиска наличия слова "Bug" в массиве
     @RepeatedTest(10)
-    @DisplayName("Тест hasBug со случайным массивом")
-    void testHasBug(RepetitionInfo repetitionInfo) {
-        // Генерируем массив случайной длины от 1 до 5
-        int len = random.nextInt(5) + 1;
-        String[] arr = new String[len];
-        // Гарантируем, что хотя бы один элемент будет "Bug"
-        int bugIndex = random.nextInt(len);
-        for (int i = 0; i < len; i++) {
-            if (i == bugIndex) {
-                arr[i] = "Bug";
-            } else {
-                arr[i] = "Word" + random.nextInt(100);
+    @DisplayName("ДЗ3.2.7: hasBug")
+    void testHasBug() {
+        // Случайно выбираем наличие "Bug"
+        boolean shouldBeTrue = ThreadLocalRandom.current().nextBoolean();
+        String[] arr = shouldBeTrue ? new String[]{"Test", "Bug"} : new String[]{"Test", "NoBug"};
+
+        boolean actual = HomeworkMethods1.hasBug(arr);
+        assertEquals(shouldBeTrue, actual, "hasBug error");
+    }
+
+    @RepeatedTest(10)
+    @DisplayName("ДЗ3.2.8: getEvenInRange")
+    void testGetEvenInRange() {
+        int start = ThreadLocalRandom.current().nextInt(1, 10);
+        int end = start + ThreadLocalRandom.current().nextInt(1, 10);
+
+        // Строим ожидаемый результат
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (int i = start; i <= end; i++) {
+            if (i % 2 == 0) {
+                if (!first) sb.append(" ");
+                sb.append(i);
+                first = false;
             }
         }
+        String expected = sb.toString();
 
-        boolean actual = methods.HomeworkMethods1.hasBug(arr);
-
-        Assertions.assertThat(actual)
-                .as("Наличие 'Bug' в массиве должно быть true")
-                .isTrue();
+        String actual = HomeworkMethods1.getEvenInRange(start, end);
+        assertEquals(expected, actual, "getEvenInRange error for range [" + start + ", " + end + "]");
     }
 
-    // Тест получения списка четных чисел в диапазоне
     @RepeatedTest(10)
-    @DisplayName("Тест getEvenInRange со случайным диапазоном")
-    void testGetEvenInRange(RepetitionInfo repetitionInfo) {
-        int start = random.nextInt(10);
-        int end = start + random.nextInt(10) + 1; // end всегда > start
-        String actual = methods.HomeworkMethods1.getEvenInRange(start, end);
-
-        // Проверяем, что результат не пустой
-        Assertions.assertThat(actual)
-                .as("Результат getEvenInRange(%d, %d) не должен быть пустым", start, end)
-                .isNotEmpty();
-    }
-
-    // Тест поиска максимального элемента в массиве
-    @RepeatedTest(10)
-    @DisplayName("Тест findMax со случайным массивом")
-    void testFindMax(RepetitionInfo repetitionInfo) {
-        int len = random.nextInt(5) + 1;
-        int[] arr = new int[len];
+    @DisplayName("ДЗ3.2.9: findMax")
+    void testFindMax() {
+        int size = ThreadLocalRandom.current().nextInt(1, 6);
+        int[] arr = new int[size];
         int max = Integer.MIN_VALUE;
-        for (int i = 0; i < len; i++) {
-            arr[i] = random.nextInt(100);
-            if (arr[i] > max) {
-                max = arr[i];
-            }
-        }
-
-        int actual = methods.HomeworkMethods1.findMax(arr);
-
-        Assertions.assertThat(actual)
-                .as("Максимальный элемент в массиве должен быть %d", max)
-                .isEqualTo(max);
-    }
-
-    // Тест реверсирования массива строк
-    @RepeatedTest(10)
-    @DisplayName("Тест reverse со случайным массивом")
-    void testReverse(RepetitionInfo repetitionInfo) {
-        int len = random.nextInt(5) + 1;
-        String[] original = new String[len];
-        for (int i = 0; i < len; i++) {
-            original[i] = "Str" + i;
-        }
-
-        // Создаем ожидаемый перевернутый массив
-        String[] expected = new String[len];
-        for (int i = 0; i < len; i++) {
-            expected[i] = original[len - 1 - i];
-        }
-
-        String[] actual = methods.HomeworkMethods1.reverse(original);
-
-        Assertions.assertThat(actual)
-                .as("Перевернутый массив должен совпадать с ожидаемым")
-                .isEqualTo(expected);
-    }
-
-    // Тест вычисления среднего арифметического списка (возвращает double)
-    @RepeatedTest(10)
-    @DisplayName("Тест calcAverage со случайным списком")
-    void testCalcAverage(RepetitionInfo repetitionInfo) {
-        int size = random.nextInt(5) + 1;
-        List<Integer> list = new java.util.ArrayList<>();
-        double sum = 0;
         for (int i = 0; i < size; i++) {
-            int val = random.nextInt(100);
-            list.add(val);
-            sum += val;
+            arr[i] = ThreadLocalRandom.current().nextInt(1, 100);
+            if (arr[i] > max) max = arr[i];
         }
-        double expected = sum / size;
 
-        double actual = methods.HomeworkMethods1.calcAverage(list);
-
-        Assertions.assertThat(actual)
-                .as("Среднее арифметическое списка %s должно быть %f", list, expected)
-                .isCloseTo(expected, Assertions.within(0.001));
+        int actual = HomeworkMethods1.findMax(arr);
+        assertEquals(max, actual, "findMax error");
     }
 
-    // Тест удаления конкретного имени из списка (возвращает List)
     @RepeatedTest(10)
-    @DisplayName("Тест removeSpecificName со случайным списком")
-    void testRemoveSpecificName(RepetitionInfo repetitionInfo) {
-        int size = random.nextInt(5) + 2; // Минимум 2 элемента
-        List<String> list = new java.util.ArrayList<>();
+    @DisplayName("ДЗ3.2.10: reverse")
+    void testReverse() {
+        int size = ThreadLocalRandom.current().nextInt(1, 6);
+        String[] arr = new String[size];
+        String[] expected = new String[size];
         for (int i = 0; i < size; i++) {
-            list.add("Name" + i);
+            arr[i] = "Item" + i;
+            expected[i] = "Item" + (size - 1 - i);
         }
 
-        // Удаляем первый элемент
-        String nameToRemove = list.get(0);
-        List<String> expectedList = new java.util.ArrayList<>(list);
-        expectedList.remove(nameToRemove);
+        String[] actual = HomeworkMethods1.reverse(arr);
+        assertArrayEquals(expected, actual, "reverse error");
+    }
 
-        List<String> actual = methods.HomeworkMethods1.removeSpecificName(list, nameToRemove);
+    @RepeatedTest(10)
+    @DisplayName("ДЗ3.2.11: calcAverage")
+    void testCalcAverage() {
+        int size = ThreadLocalRandom.current().nextInt(1, 6);
+        List<Integer> list = List.of(generateNumbers(size));
 
-        Assertions.assertThat(actual)
-                .as("Список после удаления '%s' должен совпадать с ожидаемым", nameToRemove)
-                .isEqualTo(expectedList);
+        int sum = 0;
+        for (int n : list) sum += n;
+        double expected = (double) sum / size;
+
+        double actual = HomeworkMethods1.calcAverage(list);
+        assertEquals(expected, actual, 0.01, "calcAverage error");
+    }
+
+    @RepeatedTest(10)
+    @DisplayName("ДЗ3.2.12: removeSpecificName")
+    void testRemoveName() {
+        List<String> list = List.of("A", "B", "C");
+        // Случайно выбираем, кого удаляем
+        String toRemove = List.of("A", "B", "C").get(ThreadLocalRandom.current().nextInt(3));
+
+        List<String> expected = new java.util.ArrayList<>(list);
+        expected.remove(toRemove);
+
+        List<String> actual = HomeworkMethods1.removeSpecificName(list, toRemove);
+        assertEquals(expected, actual, "removeSpecificName error");
+    }
+
+    // Вспомогательный метод для генерации случайных чисел
+    private Integer[] generateNumbers(int size) {
+        Integer[] nums = new Integer[size];
+        for (int i = 0; i < size; i++) {
+            nums[i] = ThreadLocalRandom.current().nextInt(1, 100);
+        }
+        return nums;
     }
 }

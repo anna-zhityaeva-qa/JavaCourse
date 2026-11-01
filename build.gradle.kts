@@ -1,8 +1,10 @@
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
-    id("java")
+    java
 }
 
-group = "org.example"
+group = "com.example"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -16,13 +18,31 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.24.2")
 }
 
-tasks.test {
-    useJUnitPlatform()
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
-// Задача для фильтрации тестов по тегу "homework"
+tasks.test {
+    useJUnitPlatform {
+        // Фильтрация по тегу
+        includeTags("homework")
+    }
+    testLogging {
+        events = setOf(
+            TestLogEvent.STARTED,
+            TestLogEvent.PASSED,
+            TestLogEvent.FAILED
+        )
+        showStandardStreams = true
+        showExceptions = true
+    }
+}
+
 tasks.register<Test>("runHomeworkTests") {
     useJUnitPlatform {
         includeTags("homework")
     }
+    dependsOn("test")
 }
